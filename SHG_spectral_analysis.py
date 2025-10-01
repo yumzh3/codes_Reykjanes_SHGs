@@ -1,4 +1,4 @@
-## conduct spectral analysis of SHGs MgO time series
+## conduct spectral analysis on MgO time series of sediment-hosted glasses (SHGs)
 
 ## written by Mingzhen Yu
 ## Jun 17, 2024
