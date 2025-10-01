@@ -19,9 +19,14 @@ import matplotlib.patheffects as path_effects
 
 
 # %% spectral analysis
-# load MgO time series data for core 22, e.g., data_22
-# get the age data as time, and MgO data as signal
-
+## load MgO time series data for core 22.
+""" 
+load moving-average time series data of SHGs from core 22 provided in Supplementary DataS3.
+interpolate the missing value for MgO time series.
+"""
+data_22 = pd.read_excel('the SHG data file')  # load SHG data
+time = data_22['movingAve_Age'] 
+signal = data_22['movingAve_Mg']  # MgO time series
 signal_nan_index = signal[signal[:].isna()].index
 signal = pd.to_numeric(signal,errors='coerce')
 signal = signal.interpolate(limit_direction='both')
@@ -33,15 +38,18 @@ prewhitened = detrended[1:]-ar_coef*detrended[:-1]
 
 signal_pretreated = prewhitened
 
-# === use single-taper spectral analysis
+## === use single-taper spectral analysis
 fs = 1/2
 frequencies, power = periodogram(signal_pretreated , fs=0.5) 
 frequencies = frequencies[1:] # remove zero frequency at the beginning to avoid division by zero
 periods = 1/frequencies  
 power = power[1:]
 
+## parameter for montecarlo shuffle test
 np.random.seed(0)
-n_simulations = 1000
+n_simulations = 1000  # repeat 1000 times
+
+## statistic sigficance of the strongest spectral peak appeared each time
 simulated_max = []
 for _ in range(n_simulations):
     shuffled = np.random.permutation(signal_pretreated)
@@ -49,10 +57,9 @@ for _ in range(n_simulations):
     simulated_max.append(sim_power.max())
 p_value = np.mean(np.array(simulated_max) >= power.max())
 
+## statistic sigficance of frequency with highest power observed from the specrtal analysis on the original unshuffled MgO time series data.
 sorted_indices_power = np.argsort(power)[::-1]
-np.random.seed(0)
 target_freq = frequencies[sorted_indices_power[0]]  # target frequency for p-value test which is the frequency with highest power
-n_simulations = 1000
 simulated_power = []
 for _ in range(n_simulations):
     shuffled = np.random.permutation(signal_pretreated)
@@ -61,9 +68,8 @@ for _ in range(n_simulations):
     simulated_power.append(sim_power[target_idx])
 p_value_target = np.mean(np.array(simulated_power) >= power.max())
 
-np.random.seed(0)
+## statistic sigficance of frequency with the second high power observed from the specrtal analysis on the original unshuffled MgO time series data.
 target_freq_2 = frequencies[sorted_indices_power[1]]  # target frequency for p-value test which is the frequency with highest power
-n_simulations = 1000
 simulated_power = []
 for _ in range(n_simulations):
     shuffled = np.random.permutation(signal_pretreated)
@@ -72,9 +78,8 @@ for _ in range(n_simulations):
     simulated_power.append(sim_power[target_idx])
 p_value_target_2 = np.mean(np.array(simulated_power) >= power[sorted_indices_power[1]])
 
-np.random.seed(0)
+## statistic sigficance of frequency with the third high power observed from the specrtal analysis on the original unshuffled MgO time series data.
 target_freq_3 = frequencies[sorted_indices_power[2]]  # target frequency for p-value test which is the frequency with highest power
-n_simulations = 1000
 simulated_power = []
 for _ in range(n_simulations):
     shuffled = np.random.permutation(signal_pretreated)
@@ -83,7 +88,7 @@ for _ in range(n_simulations):
     simulated_power.append(sim_power[target_idx])
 p_value_target_3 = np.mean(np.array(simulated_power) >= power[sorted_indices_power[2]])
 
-# === plot
+## === plot
 plot_params = {'figsize': (16,13),
                'linecolor_detrend': 'gray',
                'linecolor_prewhitened': 'blue',
