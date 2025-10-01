@@ -20,19 +20,35 @@ import matplotlib.patheffects as path_effects
 
 # %% cross-correlation
 ## load time series data for both SHGs and d18O.
-# load moving-average time series data of sediment-hosted glasses
-# load d18O data, e.g., LR04 stack
-# make sure the ages in two data sets are the same and d18O value is reversed.
+""" 
+load moving-average time series data of SHGs from core 22 provided in Supplementary DataS3.
+load global benthic d18O stack from Lisiecki and Raymo, 2005 (LR04).
+make sure ages in two data sets are the same and d18O value is reversed.
+"""
+data = pd.read_excel('the SHG data file')  # load SHG data for elements
+data_Mg8 = pd.read_excel('the SHG data file')  # load SHG data for elements that are normalized to 8 wt% MgO for differentiation correction
+data = data[:-6]  # truncated the core 22 SHGs data to 115 ka
+data_Mg8 = data_Mg8[:-6]  # truncated the core 22 SHGs data to 115 ka
+data_LR04 = pd.read_excel('LR04 d18O stack data file')  # load LR04 d18O data. The data can be downloaded from their website.
+data_LR04_sub = data_LR04[data_LR04['Time (ka)'].isin(data['movingAve_Age'])]  # get the data from LR04 that has the same age of the core data
+data_LR04_sub['Benthic d18O (per mil)'] = -data_LR04_sub['Benthic d18O (per mil)']  # convert d18O of LR04 to reverse order
 
-isotope_for_lag_trace = ['La','K','Rb','Ba','Sm','Th','La_Sm']
+## components for cross-correlation
+isotope_for_lag_trace = ['La','K','Rb','Ba','Sm','Th','La_Sm']  
 isotope_for_lag_trace8 = ['La8','K8','Rb8','Ba8','Th8']
 
-## === use LR04 d18O record
+## parameter for bootstrap and montecarlo
 n_bootstrap = 1000
 n_montecarlo = 1000
-random_seed = 42
+random_seed = 42  # with this seed, results can be replicated if using the same data sets.
 
 # === FUNCTION: Bootstrap Confidence Interval for Lag
+"""
+Bootstrap d18O and SHG time series scaled by their own standard errors and conduct the cross-correlation to get the best lag value.
+Repeat 1000 times, and calculate the mean and 95% confidence intervals, and that is the bootstrap mean lag shown in supplement figures.
+Standard error of LR04 d18O is provided in their data set downloaded from their website.
+Standard error of core 22 SHGs is provided with the moving-average time seris in Supplementary DataS3.
+"""
 def bootstrap_lag_confidence(d18O, element_data, d18O_sem, element_sem, n_iter, seed,element_nan_index):
     np.random.seed(seed)
     best_lags = []
@@ -53,6 +69,10 @@ def bootstrap_lag_confidence(d18O, element_data, d18O_sem, element_sem, n_iter, 
     ci_upper = np.percentile(best_lags, 97.5)
     return np.mean(best_lags), (ci_lower, ci_upper)
 # === FUNCTION: Monte Carlo Shuffle Test for Correlation
+"""
+Suffule the SHG time series data and conduct cross-correlation with the fixed d18O record for 1000 times.
+Check the statistical significance of the observed correlation from the original unshuffled data set.
+"""
 def monte_carlo_significance(d18O, element_data, n_iter, seed):
     np.random.seed(seed)
     d18O_norm = (d18O - np.mean(d18O)) / np.std(d18O,ddof=1)
@@ -75,20 +95,12 @@ d18O = d18O.values
 d18O_sem = data_LR04_sub['Standard error (per mil)']
 d18O_sem = d18O_sem.values
 for element in isotope_for_lag_trace:
-    # == use moving average
+    # == use moving-average time series
     element_data = data['movingAve_'+element]
     element_data = element_data.values
     element_sem = data['SEM_'+element]
     element_nan_index = element_sem[element_sem[:].isna()].index
     element_sem = np.nan_to_num(element_sem,nan=0)
-    
-    # # == use binned average
-    # element_data = data[element]
-    # element_nan_index = element_data[element_data[:].isna()].index
-    # element_data = pd.to_numeric(element_data,errors='coerce')
-    # element_data = element_data.interpolate(limit_direction='both')
-    # element_sem = data['se_'+element]
-    # element_sem = np.nan_to_num(element_sem,nan=0)
     
     d18O_norm = (d18O - np.mean(d18O)) / np.std(d18O,ddof=1)
     elem_norm = (element_data - np.mean(element_data)) / np.std(element_data,ddof=1)
@@ -106,7 +118,7 @@ for element in isotope_for_lag_trace:
         'Lag_95%CI_high': ci_high,
         'Max_correlation': max_corr,
         'Correlation_p-value': p_val})
-df_results_trace = pd.DataFrame(results_trace)
+df_results_trace = pd.DataFrame(results_trace)  # an output data frame for results.
 
 corr_observed_trace8 = {}
 results_trace8 = []
@@ -120,15 +132,7 @@ for element in isotope_for_lag_trace8:
     element_data = element_data.values
     element_sem = data_Mg8['SEM_'+element]
     element_sem = np.nan_to_num(element_sem,nan=0)
-    
-    # # == use binned average
-    # element_data = data_Mg8[element]
-    # element_nan_index = element_data[element_data[:].isna()].index
-    # element_data = pd.to_numeric(element_data,errors='coerce')
-    # element_data = element_data.interpolate(limit_direction='both')
-    # element_sem = data_Mg8['se_'+element]
-    # element_sem = np.nan_to_num(element_sem,nan=0)
-    
+      
     d18O_norm = (d18O - np.mean(d18O)) / np.std(d18O,ddof=1)
     elem_norm = (element_data - np.mean(element_data)) / np.std(element_data,ddof=1)
     corr = correlate(d18O_norm, elem_norm, mode='full')
@@ -145,7 +149,7 @@ for element in isotope_for_lag_trace8:
         'Lag_95%CI_high': ci_high,
         'Max_correlation': max_corr,
         'Correlation_p-value': p_val})
-df_results_trace8 = pd.DataFrame(results_trace8)
+df_results_trace8 = pd.DataFrame(results_trace8)  # an output data frame for results.
 
 # === plot
 plot_params = {'figsize': (18,26),
@@ -167,9 +171,9 @@ plot_params = {'figsize': (18,26),
                'fontname_all': 'Arial',
                'textcolor': 'k',
                'textstyle': 'italic'}
-fig,axes = plt.subplots(nrows=4,ncols=2,sharex='col',    # all panels share the same x-axis
+fig,axes = plt.subplots(nrows=4,ncols=2,sharex='col',   
                        figsize=plot_params['figsize'],
-                       gridspec_kw={'hspace':0})  # reduce vertical space between them  
+                       gridspec_kw={'hspace':0}) 
 
 ax1 = axes[0][0]
 ax1.plot(lags,corr_observed_trace['La'],color=plot_params['linecolor_corr'],
