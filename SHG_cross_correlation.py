@@ -1,8 +1,8 @@
-## conduct cross-correlation
+## conduct cross-correlation between sediment-hosted glasses (SHGs) geochemical time seris and d18O stack
 
 ## written by Mingzhen Yu
 ## Jun 17, 2024
-## last modified: Sep 30, 25
+## last modified: Sep 30, 2025
     
 import pandas as pd
 import numpy as np
@@ -19,6 +19,7 @@ import matplotlib.patheffects as path_effects
 
 
 # %% cross-correlation
+## load time series data for both SHGs and d18O.
 # load moving-average time series data of sediment-hosted glasses
 # load d18O data, e.g., LR04 stack
 # make sure the ages in two data sets are the same and d18O value is reversed.
