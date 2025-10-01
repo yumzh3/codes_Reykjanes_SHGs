@@ -42,7 +42,7 @@ Toplis, M.J., 2005. The thermodynamics of iron and magnesium partitioning betwee
 Yu, M. and Langmuir, C.H., 2023. The origin of Ni and Mn variations in Hawaiian and MORB olivines and associated basalts. Chemical Geology, 640, p.121745.<br> 
 # Updates and Cite Policy
 The updates of the code will be posted timely. Comments and suggestions are welcome and can be sent to Mingzhen Yu (myu@g.harvard.edu).<br> 
-Any publications using this code need to follow the CITATION.cff to cite the codes.<br> 
+Any publications using this code need to cite the paper if it is published, otherwise, follow the CITATION.cff to cite the codes.<br> 
 
 
 
