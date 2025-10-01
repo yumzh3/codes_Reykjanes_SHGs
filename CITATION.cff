@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+message: "If you use this software, please cite the paper if it is published, ortherwise, please cite it as below."
 authors:
 - family-names: "Yu"
   given-names: "Mingzhen"
@@ -8,7 +8,7 @@ authors:
       "Department of Earth and Planetary Sciences at Harvard
       University"
   orcid: "https://orcid.org/0000-0002-4622-1605"
-title: "crystallization_modeling"
+title: "codes_Reykjanes_SHGs"
 version: 1.0.0
 date-released: 2025-09-29
 url: "https://github.com/yumzh3/crystallization_modeling"
