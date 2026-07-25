@@ -1,18 +1,20 @@
 # Overview
 Please read the README.md and LICENSE before using and downloading codes.<br> 
-Please follow the CITATION.cff to for citation.<br> 
-Python codes for crystallization calculation shown in Figure S3, cross-correlation, and spectral analysis are provided here to replicate results shown in the paper.<br> 
+Please follow the CITATION.cff for citation.<br> 
+Python codes for crystallization calculation; cross-correlation, and spectral analysis are provided here to replicate results shown in the paper.<br> 
 Codes and demo data for crystallization modeling are listed in the folder 'xtal_Yu2025'.<br> 
-This is a part of Supplementary Materials for paper "Sensitivity of Reykjanes Ridge volcanism to glacial cycles over the last 130,000 years" written by Mingzhen Yu (corresponding author, myu@g.harvard.edu) et al. being submitted to Science Advances. Codes are corresponding to Mingzhen Yu (Department of Earth and Planetary Sciences, Harvard University, Cambridge, MA 02138, USA).<br> 
+This is a part of Supplementary Materials for paper "Rapid sea-level change modulates southern Reykjanes ridge magmatism" written by Mingzhen Yu (corresponding author, myu@g.harvard.edu) et al. being submitted to EPSL. Codes are corresponding to Mingzhen Yu (Department of Earth and Planetary Sciences, Harvard University, Cambridge, MA 02138, USA).<br> 
 Codes are written in Python.<br> 
 
 # File Introduction
-## SHG_cross_correlation.py
+## SHG_xcorr_analysis.py
 This python code can be used to replicate the cross-correlation results shown in the paper with data loaded.<br>
-The time series data of SHGs are provided in the Supplementary DataS3.<br> 
-## SHG_spectral_analysis.py
+Relevant data are provided as SHG_data_for_xcorr.xlsx, and SHG_data_for_xcorr_fine_tuned.xlsx in the same folder.<br>
+Detailed explanations are available in the Python file.<br>
+## MgO_spectral_analysis.py
 This python code can be used to replicate the spectral analysis results shown in the paper with data loaded.<br>
-The time series data of SHGs are provided in the Supplementary DataS3.<br> 
+Relevant data are provided as SHG_data_for_xcorr.xlsx in the same folder.<br>
+Detailed explanations are available in the Python file.<br>
 ## xtal_Yu2025 folder
 In the folder 'xtal_Yu2025', there are five '.py' files and one '.csv' file.<br> 
 ### data file
@@ -32,7 +34,8 @@ Davis, F.A., Humayun, M., Hirschmann, M.M. and Cooper, R.S., 2013. Experimentall
 Hill, E., Wood, B.J. and Blundy, J.D., 2000. The effect of Ca-Tschermaks component on trace element partitioning between clinopyroxene and silicate melt. Lithos, 53(3-4), pp.203-215.<br> 
 Langmuir, C.H., Klein, E.M. and Plank, T., 1992. Petrological systematics of mid-ocean ridge basalts: constraints on melt generation beneath ocean ridges. Geophysical monograph series, 71, pp.183-280.<br> 
 LaTourrette, T.Z. and Burnett, D.S., 1992. Experimental determination of U and Th partitioning between clinopyroxene and natural and synthetic basaltic liquid. Earth and Planetary Science Letters, 110(1-4), pp.227-244.<br> 
-Le Roux, V., Dasgupta, R. and Lee, C.T., 2011. Mineralogical heterogeneities in the Earth's mantle: Constraints from Mn, Co, Ni and Zn partitioning during partial melting. Earth and Planetary Science Letters, 307(3-4), pp.395-408.<br> 
+Le Roux, V., Dasgupta, R. and Lee, C.T., 2011. Mineralogical heterogeneities in the Earth's mantle: Constraints from Mn, Co, Ni and Zn partitioning during partial melting. Earth and Planetary Science Letters, 307(3-4), pp.395-408.<br>
+Reilly, J., Latychev, K., Coulson, S. and Mitrovica, J.X., 2025. Glacial hydro-isostatic adjustment at mid-ocean ridges. Geophysical Journal International, 240(1), pp.550-558.<br>
 Salters, V.J. and Stracke, A., 2004. Composition of the depleted mantle. Geochemistry, Geophysics, Geosystems, 5(5).<br> 
 Sobolev, A.V., Hofmann, A.W., Sobolev, S.V. and Nikogosian, I.K., 2005. An olivine-free mantle source of Hawaiian shield basalts. Nature, 434(7033), pp.590-597.<br> 
 St C. O’Neill, H. and Jenner, F.E., 2012. The global pattern of trace-element distributions in ocean floor basalts. Nature, 491(7426), pp.698-704.<br> 
