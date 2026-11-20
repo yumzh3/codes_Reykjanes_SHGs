@@ -18,7 +18,7 @@ Detailed explanations are available in the Python file.<br>
 ## xtal_Yu2025 folder
 In the folder 'xtal_Yu2025', there are five '.py' files and one '.csv' file.<br> 
 ### data file
-The '.csv' file named 'parental_magma_data.csv' provides users with starting compositions used in fractional crystallization modeling shown in figure S3.<br> 
+The '.csv' file named 'parental_magma_data.csv' provides users with starting compositions used in fractional crystallization modeling shown in teh relevant figure in the manuscript.<br> 
 ### code files
 #### wl1989stoich_2023.py, wl1989kdcalc_2023.py, wlState_2023.py, wl1989models_2023.py
 These codes defined fucntions used in calculating melt and mineral (olivine, plagioclase, clinopyroxene) compositions for two types of crystallization: fractional crystallization and equilibrium crystallization. Compositions calculated include SiO2, TiO2, Al2O3, FeO(t), MgO, CaO, Na2O, K2O, P2O5, MnO, NiO for both melt and minerals, and Rb, Sr, Nb, Ba, La, Ce, Pr, Nd, Sm, Eu, Gd, Dy, Er, Yb, Lu, Ta, Pb, Th, U, and the totally incompatible component with bulk partition coefficients equal to 0 for the melt. Note that iron is treated as ferrous iron in the calculation and we assume a ratio of FeO/FeO(t) as 0.9 for mid-ocean ridge basalts in our modeling.<br> 
