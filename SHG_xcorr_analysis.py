@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
 Written by Mingzhen Yu with assitance of Claude Fable5.
-Cross-correlation analysis and Figure 9 for sediment-hosted glass (SHG)
-geochemical time series vs. local relative sea level, southern Reykjanes Ridge.
+Cross-correlation analysis for sediment-hosted glass (SHG)
+geochemical time series vs. local relative sea level record, southern Reykjanes Ridge.
 
-This single script reproduces every statistic in Section 4 of the manuscript and
-draws the Figure 9. It performs:
+This single script reproduces every statistic in cross-correlation sections in the manuscript and
+draws the relevant figures. It performs:
 
   1. RSL vs dRSL lead check: the offset (kyr) at which the rate of sea-level
      change best correlates with sea level itself, per analysis window.
   2. Lagged Pearson cross-correlation between the unsmoothed 2-kyr binned
-     geochemical series (La, La/Sm, Rb, Ba, Th, K2O; cores GeoB25444-1 "core 44"
+     geochemical series (La8.0, Rb8.0, Ba8.0, Th8.0, K2O8.0, La, La/Sm, Rb, Ba, Th, K2O; cores GeoB25444-1 "core 44"
      and GeoB25422-1 "core 22") and the local sea-level record (RSL and its rate
-     dRSL; Reilly et al., 2025), for lag windows +/-14 kyr (primary) and
-     +/-20 kyr (sensitivity).
+     dRSL; Reilly et al., 2025), for lag windows +/-14 kyr (sensitivity) and
+     +/-20 kyr (primary).
   3. Significance against two surrogate nulls (NSUR each), with the maximum
      correlation across all tested lags as the test statistic (accounting for
      the lag search; one-sided, positive correlations):
@@ -22,8 +22,8 @@ draws the Figure 9. It performs:
        - phase-randomized surrogates preserving each series' full power
          spectrum (conservative null).
   4. Five-bin (10 kyr) smoothed comparison (visualization reference only).
-  5. Figure 9: 2x2 panels of r(lag) curves (core x target) with peak markers
-     encoding significance: filled = p < 0.05 vs phase-randomized null;
+  5. Figure: 2x2 panels of r(lag) curves (core x target) with peak markers
+     encoding significance: filled = p < 0.05 vs phase-randomized null and AR(1) null;
      half-filled = p < 0.05 vs AR(1) null only; open = neither.
 
 Conventions:
@@ -36,14 +36,13 @@ Input : Excel workbook with sheets 'core 22', 'core 44' (Age + element columns)
         and 'relative sea level' (Age_ka, RSL_m, dRSL_m/kyr).
 Output: shg_xcorr_results.csv  (all windows/cores/targets/elements: r, lag,
                                 p-values, edge flag, smoothed comparison)
-        fig9_curves.csv        (full r(lag) curves, +/-14 kyr, for replotting)
-        fig9_significance.csv  (peak r, lag, p-values, significance class)
-        fig9.png/.pdf    (the figure)
+        fig_curves.csv        (full r(lag) curves, +/-14 kyr, for replotting)
+        fig_significance.csv  (peak r, lag, p-values, significance class)
+        fig_draft.png/.pdf    (the figure)
 
 Reproducibility: the random generator is re-seeded per (core, target, element)
 combination, so all p-values are exactly reproducible and identical between the
-results table and the figure. Monte Carlo error at NSUR = 2000 is ~+/-0.005-0.01
-on p; raise NSUR (e.g., 10000) for final manuscript values.
+results table and the figure.
 
 Usage: python3 SHG_xcorr_analysis.py [data.xlsx]     (default 'SHG_data_for_xcorr.xlsx')
                                                      (or 'SHG_data_for_xcorr_fine_tuned.xlsx')
@@ -63,11 +62,14 @@ NSUR = 10000                               # ±0.002 at p = 0.05
 SEED = 42
 DT = 2.0                                   # bin width, kyr
 WINDOWS = [20,14]                         # lag windows, kyr (first = primary, used for figure)
-ELEMENTS = ['La', 'La/Sm', 'Rb', 'Ba', 'Th', 'K2O']
+ELEMENTS = ['La8.0', 'La/Sm', 'Rb8.0', 'Ba8.0', 'Th8.0', 'K2O8.0']        # fractionation-corrected
+# ELEMENTS = ['La', 'La/Sm', 'Rb', 'Ba', 'Th', 'K2O']
 CORES = [('core 44', 74), ('core 22', 115)]  # (sheet, max age used, ka)
 MIN_OVERLAP_FRAC = 0.20
 COLORS = {'La': "peru", 'La/Sm': "darkcyan", 'Rb': "firebrick",
-          'Ba': "slateblue", 'Th': "olivedrab", 'K2O': "palevioletred"}
+          'Ba': "slateblue", 'Th': "olivedrab", 'K2O': "palevioletred",
+         'La8.0': "peru", 'La/Sm': "darkcyan", 'Rb8.0': "firebrick",
+         'Ba8.0': "slateblue", 'Th8.0': "olivedrab", 'K2O8.0': "palevioletred"}
 
 # ------------------------------ helpers ------------------------------------
 def load(path):
@@ -242,6 +244,10 @@ def main():
             c = COLORS[el]
             if el == 'K2O':
                 ax.plot(fd['lags'], fd['rc'], 's-', color=c, lw=1.1, mec='k', mew=0.5, ms=3, label='K$_2$O')
+            elif el[:-1] == 'K2O':
+                ax.plot(fd['lags'], fd['rc'], 's-', color=c, lw=1.1, mec='k', mew=0.5, ms=3, label='K$_2$O$_{8.0}$')
+            elif el[-1] == '8':
+                ax.plot(fd['lags'], fd['rc'], 's-', color=c, lw=1.1, mec='k', mew=0.5, ms=3, label=el[:-1]+'$_{8.0}$')
             else:
                 ax.plot(fd['lags'], fd['rc'], 's-', color=c, lw=1.1, mec='k', mew=0.5, ms=3, label=el)
             style = dict(ms=7, mec=c, mew=1.2, zorder=5)
@@ -291,19 +297,19 @@ def main():
     axes[1,0].text(-0.14, 0.97, 'c', transform=axes[1,0].transAxes, fontsize=10, fontweight='bold', fontname='Arial')
     axes[1,1].text(-0.14, 0.97, 'd', transform=axes[1,1].transAxes, fontsize=10, fontweight='bold', fontname='Arial')
     plt.tight_layout()
-    # plt.savefig('fig9_draft.png', dpi=300)
-    plt.savefig('fig9_draft.pdf')
+    # plt.savefig('fig_draft.png', dpi=300)
+    plt.savefig('fig_draft.pdf')
 
-    with open('fig9_curves.csv', 'w', newline='') as f:
+    with open('fig_curves.csv', 'w', newline='') as f:
         w = csv.DictWriter(f, fieldnames=curve_rows[0].keys())
         w.writeheader()
         w.writerows(curve_rows)
-    with open('fig9_significance.csv', 'w', newline='') as f:
+    with open('fig_significance.csv', 'w', newline='') as f:
         w = csv.DictWriter(f, fieldnames=sig_rows[0].keys())
         w.writeheader()
         w.writerows(sig_rows)
-    print('\nSaved: shg_xcorr_results.csv, fig9_curves.csv, fig9_significance.csv, '
-          'fig9_draft.png/.pdf')
+    print('\nSaved: shg_xcorr_results.csv, fig_curves.csv, fig_significance.csv, '
+          'fig_draft.png/.pdf')
 
 
 if __name__ == '__main__':
