@@ -20,16 +20,16 @@ in particular near the 41 kyr obliquity band. In one run this script:
   4. Repeats the analysis for two windows: the full record (0-131 ka) and the
      0-115 ka interval used in the cross-correlation analysis (Section 4).
   5. Prints a results table, writes the spectra to CSV (for replotting in any
-     software), and draws the two-panel Figure S7.
+     software), and draws the two-panel figure.
 
-Output: figS7_MgO_spectrum.png/.pdf  (the figure)
-        figS7_spectra.csv            (window, frequency, period, observed PSD,
+Output: fig_MgO_spectrum.png/.pdf  (the figure)
+        fig_spectra.csv            (window, frequency, period, observed PSD,
                                       AR(1) median / 95% / 99% levels)
         results table to stdout      (PSD vs local levels at reference periods;
                                       global p-value per window)
 
 Reproducibility: fixed seed; Monte Carlo error on the global p-value at
-NSUR = 10,000 is ~+/-0.002; raise NSUR for final manuscript values.
+NSUR = 10,000 is ~+/-0.002.
 
 Usage: python3 Mgo_spectral_analysis.py [data.xlsx]   (default 'SHG_data_for_xcorr.xlsx';
        expects a sheet 'core 22' with 'Age' and 'MgO' columns)
@@ -155,13 +155,13 @@ def main():
     axes[0].text(-0.14, 0.97, 'a', transform=axes[0].transAxes, fontsize=10, fontweight='bold', fontname='Arial')
     axes[1].text(-0.14, 0.97, 'b', transform=axes[1].transAxes, fontsize=10, fontweight='bold', fontname='Arial')
     plt.tight_layout()
-    # plt.savefig('figS7_MgO_spectrum.png', dpi=300)
-    plt.savefig('figS7_MgO_spectrum.pdf')
-    with open('figS7_spectra.csv', 'w', newline='') as fh:
+    # plt.savefig('fig_MgO_spectrum.png', dpi=300)
+    plt.savefig('fig_MgO_spectrum.pdf')
+    with open('fig_spectra.csv', 'w', newline='') as fh:
         w = csv.DictWriter(fh, fieldnames=csv_rows[0].keys())
         w.writeheader()
         w.writerows(csv_rows)
-    print('\nSaved: figS7_MgO_spectrum.png/.pdf, figS7_spectra.csv')
+    print('\nSaved: fig_MgO_spectrum.png/.pdf, fig_spectra.csv')
 
 
 if __name__ == '__main__':
